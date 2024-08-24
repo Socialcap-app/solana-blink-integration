@@ -73,10 +73,10 @@ export const OPTIONS = GET; // OPTIONS request handler
 export async function POST(request: Request) {
   const body: ActionPostRequest = await request.json();
   const url = new URL(request.url);
-  const amount = url.searchParams.get("claim");
-  const community = url.searchParams.get("community");
   let sender;
 
+  console.log("POST received: ", url);
+/*  
   try {
     sender = new PublicKey(body.account);
   } catch (error) {
@@ -117,7 +117,8 @@ export async function POST(request: Request) {
       message: "Transaction created",
     },
   });
-  return new Response(JSON.stringify(payload), {
+*/  
+  return new Response(JSON.stringify({}), {
     headers: ACTIONS_CORS_HEADERS,
   });
 }
