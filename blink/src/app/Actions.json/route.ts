@@ -6,7 +6,7 @@ export const GET = async () => {
       // Map all root level routes to an action
       {
         pathPattern: "/",
-        apiPath: "/api/donate/",
+        apiPath: "/api/claim/",
       },
     ],
   };

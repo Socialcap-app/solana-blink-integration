@@ -24,7 +24,7 @@ export async function GET(request: Request) {
   const API_URL_LOCAL = "http://localhost:30800/api/query";
   const url = new URL(request.url);
   const response: AxiosResponse = await axios.get(
-    `${API_URL}/get_plan?params={"uid":"${planUid}}`,
+    `${API_URL}/get_plan?params={"uid":"${planUid}"}`,
     {
       headers: {
         ...ACTIONS_CORS_HEADERS,
