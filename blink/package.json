@@ -9,16 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "next": "14.2.6",
     "react": "^18",
-    "react-dom": "^18",
-    "next": "14.2.6"
+    "react-dom": "^18"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@solana/actions": "^1.6.2",
+    "@solana/web3.js": "^1.95.3",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
-    "eslint-config-next": "14.2.6"
+    "eslint-config-next": "14.2.6",
+    "typescript": "^5"
   }
 }
