@@ -19,7 +19,7 @@ import axios, { AxiosResponse } from "axios";
 
 // GET request handler
 export async function GET(request: Request) {
-  const planUid = "c8f91c0306e44d55ad580afb3f3cab1c";
+  const planUid = "ee50a79f6ee9426ab7ab4c2d9ea06b9c";
   const API_URL = "https://api.socialcap.dev/api/query";
   const API_URL_LOCAL = "http://localhost:30800/api/query";
   const url = new URL(request.url);
@@ -34,25 +34,33 @@ export async function GET(request: Request) {
     }
   );
 
-  console.log("claim", response);
   if (!response.data) {
     return new Response("Could not get claim", { status: 500 });
   }
-
+  const claim = response.data.data;
+  console.log("claim form data", response.data.data);
+  
+  const evidenceFormData: any[] = JSON.parse(response.data.data.evidence);
+  console.log("evidence form data", evidenceFormData);
+  let hrefParams  =   evidenceFormData.map((field) => field.sid)
+  console.log("sids", hrefParams)
+  let parameters = evidenceFormData.map((field) => ({name: field.sid, label: field.description}));
+  console.log("parameters", parameters)
   const payload: ActionGetResponse = {
     type: "action",
-    icon: "https://solana.com/_next/static/media/logotype.e4df684f.svg", // Local icon path
-    title: "Claim",
-    description: "Most valuable dev on Solana",
+    icon: claim.image, // Local icon path
+    title: claim.name,
+    description: claim.description,
     label: "Claim this credential",
     links: {
       actions: [
         {
-          label: "Claim it!",
-          href: `${url.href}?claim=xxxxxx&community=xxxxxx`,
+          href: `/api/claim/${hrefParams.join("/")}}`,  /// replace with Socialcap call  . Parameters are in the href , sid property from field
+          label: 'Claim',
+          parameters: parameters,
         },
       ],
-    },
+     },
   };
   return new Response(JSON.stringify(payload), {
     headers: ACTIONS_CORS_HEADERS,
