@@ -55,7 +55,7 @@ export async function GET(request: Request) {
     links: {
       actions: [
         {
-          href: `/api/claim/${hrefParams.join("/")}}`,  /// replace with Socialcap call  . Parameters are in the href , sid property from field
+          href: `/api/claim?name={name}&why={why}`,  /// replace with Socialcap call  . Parameters are in the href , sid property from field
           label: 'Claim',
           parameters: parameters,
         },
@@ -73,10 +73,10 @@ export const OPTIONS = GET; // OPTIONS request handler
 export async function POST(request: Request) {
   const body: ActionPostRequest = await request.json();
   const url = new URL(request.url);
-  const amount = url.searchParams.get("claim");
-  const community = url.searchParams.get("community");
   let sender;
 
+  console.log("POST received: ", url);
+/*  
   try {
     sender = new PublicKey(body.account);
   } catch (error) {
@@ -117,7 +117,8 @@ export async function POST(request: Request) {
       message: "Transaction created",
     },
   });
-  return new Response(JSON.stringify(payload), {
+*/  
+  return new Response(JSON.stringify({}), {
     headers: ACTIONS_CORS_HEADERS,
   });
 }
