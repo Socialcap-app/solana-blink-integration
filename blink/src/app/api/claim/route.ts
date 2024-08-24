@@ -42,7 +42,7 @@ export async function GET(request: Request) {
   
   const evidenceFormData: any[] = JSON.parse(response.data.data.evidence);
   console.log("evidence form data", evidenceFormData);
-  let hrefParams  =   evidenceFormData.map((field) => field.sid)
+  let hrefParams  =   evidenceFormData.map((field) => (`${field.sid}={${field.sid}}`))
   console.log("sids", hrefParams)
   let parameters = evidenceFormData.map((field) => ({name: field.sid, label: field.description}));
   console.log("parameters", parameters)
@@ -55,7 +55,7 @@ export async function GET(request: Request) {
     links: {
       actions: [
         {
-          href: `/api/claim/${hrefParams.join("/")}}`,  /// replace with Socialcap call  . Parameters are in the href , sid property from field
+          href: `/api/claim/${hrefParams.join("&")}`,  /// replace with Socialcap call  . Parameters are in the href , sid property from field
           label: 'Claim',
           parameters: parameters,
         },
