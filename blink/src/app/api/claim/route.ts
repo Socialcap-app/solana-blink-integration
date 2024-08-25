@@ -12,6 +12,7 @@ import {
   PublicKey,
   SystemProgram,
   Transaction,
+  TransactionInstruction,
   clusterApiUrl,
 } from "@solana/web3.js";
 
@@ -40,7 +41,7 @@ export async function GET(request: Request) {
   const claim = response.data.data;
   console.log("claim form data", response.data.data);
   
-  const evidenceFormData: any[] = JSON.parse(response.data.data.evidence);
+  const evidenceFormData: any[] = response.data.data.evidence;
   console.log("evidence form data", evidenceFormData);
   let hrefParams  =   evidenceFormData.map((field) => (`${field.sid}={${field.sid}}`))
   console.log("sids", hrefParams)
@@ -76,7 +77,6 @@ export async function POST(request: Request) {
   let sender;
 
   console.log("POST received: ", url);
-/*  
   try {
     sender = new PublicKey(body.account);
   } catch (error) {
@@ -94,22 +94,21 @@ export async function POST(request: Request) {
   }
 
   const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+  const programId = new PublicKey("DsizHqMmG29T3W74m8TxSSMnQA9XcBS3UPcngnRoYCgT");
+
+  const instruction = new TransactionInstruction({
+    programId: programId,
+    keys: [],
+    data: Buffer.from([]),
+    lamports: 1 * LAMPORTS_PER_SOL,
+  });      
 
   // TODO : Replace with your transaction
-  const transaction = new Transaction().add(
-    SystemProgram.transfer({
-      fromPubkey: sender, // Sender public key
-      toPubkey: new PublicKey(""), // Replace with your recipient public key
-      lamports: 1 * LAMPORTS_PER_SOL,
-    })
-  );
+  const transaction = new Transaction().add(instruction);
   transaction.feePayer = sender;
-  transaction.recentBlockhash = (
-    await connection.getLatestBlockhash()
-  ).blockhash;
-  transaction.lastValidBlockHeight = (
-    await connection.getLatestBlockhash()
-  ).lastValidBlockHeight;
+  transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+  transaction.lastValidBlockHeight = (await connection.getLatestBlockhash()).lastValidBlockHeight;
+  console.log("transaction: ", transaction);
 
   const payload: ActionPostResponse = await createPostResponse({
     fields: {
@@ -117,8 +116,9 @@ export async function POST(request: Request) {
       message: "Transaction created",
     },
   });
-*/  
-  return new Response(JSON.stringify({}), {
+  console.log("Transaction payload: ", payload);
+
+  return new Response(JSON.stringify(payload), {
     headers: ACTIONS_CORS_HEADERS,
   });
 }
