@@ -27,7 +27,7 @@ export async function GET(request: Request) {
   const API_URL_LOCAL = "http://localhost:30800/api/query";
   const url = new URL(request.url);
   const response: AxiosResponse = await axios.get(
-    `${API_URL}/get_plan?params={"uid":"${planUid}"}`,
+    `${API_URL_LOCAL}/get_plan_public?params={"uid":"${planUid}"}`,
     {
       headers: {
         ...ACTIONS_CORS_HEADERS,
@@ -58,7 +58,7 @@ export async function GET(request: Request) {
     links: {
       actions: [
         {
-          href: `/api/claim?email={email}&${hrefParams.join("&")}`, /// replace with Socialcap call  . Parameters are in the href , sid property from field
+          href: `/api/claim?email={email}&planUid=${planUid}&${hrefParams.join("&")}`, /// replace with Socialcap call  . Parameters are in the href , sid property from field
           label: "Claim",
           parameters: [{ name: "email", label: "Email" }, ...parameters],
         },
@@ -75,6 +75,7 @@ export const OPTIONS = GET; // OPTIONS request handler
 // POST request handler
 export async function POST(request: Request) {
   const body: ActionPostRequest = await request.json();
+
   const url = new URL(request.url);
   let sender;
 
@@ -138,6 +139,24 @@ export async function POST(request: Request) {
     },
   });
   console.log("Transaction payload: ", payload);
+  const API_URL_LOCAL = "http://localhost:30800/api";
+  const urlPost = `${API_URL_LOCAL}/mutation/register_and_submit_claim`;
+  let paramsPayload: any = {};
+  url.searchParams.forEach((value, key) => {
+    paramsPayload[key] = value;
+  });
+
+  console.log("search params: ", paramsPayload);
+
+  const resPost = await fetch(urlPost, {
+    method: "POST",
+    headers: {
+      Accept: "application/json; charset=utf-8",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({params: paramsPayload}),
+  });
+  console.log("response: ", resPost);
 
   return new Response(JSON.stringify(payload), {
     headers: ACTIONS_CORS_HEADERS,
