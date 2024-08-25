@@ -15,6 +15,8 @@ import {
   TransactionInstruction,
   clusterApiUrl,
 } from "@solana/web3.js";
+import { AnchorProvider, Program } from "@coral-xyz/anchor";
+import IDL from "./../../claim_contract.json";
 
 import axios, { AxiosResponse } from "axios";
 
@@ -77,7 +79,7 @@ export async function POST(request: Request) {
   let sender;
 
   console.log("POST received: ", url);
-  
+
   try {
     sender = new PublicKey(body.account);
   } catch (error) {
@@ -95,21 +97,30 @@ export async function POST(request: Request) {
   }
 
   const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
-  const programId = new PublicKey("DsizHqMmG29T3W74m8TxSSMnQA9XcBS3UPcngnRoYCgT");
+  const programId = new PublicKey(
+    "DsizHqMmG29T3W74m8TxSSMnQA9XcBS3UPcngnRoYCgT"
+  );
 
-  const instruction = new TransactionInstruction({
-    programId: programId,
-    keys: [],
-    data: Buffer.from([]),
-    lamports: 1 * LAMPORTS_PER_SOL,
-  });      
+  const provider = new AnchorProvider(connection, {
+    publicKey: sender,
+  } as any);
+
+  const claimProgram = new Program(IDL, provider);
+
+  const instruction = await claimProgram.methods.initialize().instruction();
 
   // TODO : Replace with your transaction
   const transaction = new Transaction().add(instruction);
   transaction.feePayer = sender;
-  transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
-  transaction.lastValidBlockHeight = (await connection.getLatestBlockhash()).lastValidBlockHeight;
+  transaction.recentBlockhash = (
+    await connection.getLatestBlockhash()
+  ).blockhash;
+  transaction.lastValidBlockHeight = (
+    await connection.getLatestBlockhash()
+  ).lastValidBlockHeight;
   console.log("transaction: ", transaction);
+
+  console.log(transaction.signatures);
 
   const payload: ActionPostResponse = await createPostResponse({
     fields: {
