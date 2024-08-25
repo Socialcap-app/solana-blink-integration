@@ -38,19 +38,14 @@ export async function GET(request: Request) {
     return new Response("Could not get claim", { status: 500 });
   }
   const claim = response.data.data;
-  console.log("claim form data", response.data.data);
-
-  const evidenceFormData: any[] = JSON.parse(response.data.data.evidence);
-  console.log("evidence form data", evidenceFormData);
+  const evidenceFormData: any[] = response.data.data.evidence;
   let hrefParams = evidenceFormData.map(
     (field) => `${field.sid}={${field.sid}}`
   );
-  console.log("sids", hrefParams);
   let parameters = evidenceFormData.map((field) => ({
     name: field.sid,
     label: field.description,
   }));
-  console.log("parameters", parameters);
   const payload: ActionGetResponse = {
     type: "action",
     icon: claim.image, // Local icon path
@@ -81,7 +76,7 @@ export async function POST(request: Request) {
   let sender;
 
   console.log("POST received: ", url);
-  /*  
+  
   try {
     sender = new PublicKey(body.account);
   } catch (error) {
@@ -122,7 +117,7 @@ export async function POST(request: Request) {
       message: "Transaction created",
     },
   });
-*/
+
   return new Response(JSON.stringify({}), {
     headers: ACTIONS_CORS_HEADERS,
   });
