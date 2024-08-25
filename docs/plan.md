@@ -8,6 +8,20 @@ Fields
 - planUid (hidden)
 - data from Socialcap form
 
+- claimUid
+- planUid
+- communityUid 
+- email
+- solana account
+- state (claimed, voting, closed)
+- result 
+- votes
+- positives
+- negatives
+- ignored
+- proof of voting ?
+- proof of tally ?
+
 # 2.1. Blink GET
 
 - Socialcap EvidenceForm to BlinkForm
