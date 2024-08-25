@@ -39,14 +39,14 @@ export async function GET(request: Request) {
     return new Response("Could not get claim", { status: 500 });
   }
   const claim = response.data.data;
-  console.log("claim form data", response.data.data);
-  
   const evidenceFormData: any[] = response.data.data.evidence;
-  console.log("evidence form data", evidenceFormData);
-  let hrefParams  =   evidenceFormData.map((field) => (`${field.sid}={${field.sid}}`))
-  console.log("sids", hrefParams)
-  let parameters = evidenceFormData.map((field) => ({name: field.sid, label: field.description}));
-  console.log("parameters", parameters)
+  let hrefParams = evidenceFormData.map(
+    (field) => `${field.sid}={${field.sid}}`
+  );
+  let parameters = evidenceFormData.map((field) => ({
+    name: field.sid,
+    label: field.description,
+  }));
   const payload: ActionGetResponse = {
     type: "action",
     icon: claim.image, // Local icon path
@@ -56,12 +56,12 @@ export async function GET(request: Request) {
     links: {
       actions: [
         {
-          href: `/api/claim?${hrefParams.join("&")}`,  /// replace with Socialcap call  . Parameters are in the href , sid property from field
-          label: 'Claim',
-          parameters: parameters,
+          href: `/api/claim?email={email}&${hrefParams.join("&")}`, /// replace with Socialcap call  . Parameters are in the href , sid property from field
+          label: "Claim",
+          parameters: [{ name: "email", label: "Email" }, ...parameters],
         },
       ],
-     },
+    },
   };
   return new Response(JSON.stringify(payload), {
     headers: ACTIONS_CORS_HEADERS,
@@ -77,6 +77,7 @@ export async function POST(request: Request) {
   let sender;
 
   console.log("POST received: ", url);
+  
   try {
     sender = new PublicKey(body.account);
   } catch (error) {
