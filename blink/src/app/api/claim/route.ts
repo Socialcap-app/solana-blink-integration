@@ -15,7 +15,7 @@ import {
   TransactionInstruction,
   clusterApiUrl,
 } from "@solana/web3.js";
-import { AnchorProvider, Program } from "@coral-xyz/anchor";
+import { AnchorProvider, Program, web3 } from "@coral-xyz/anchor";
 import IDL from "./../../claim_contract.json";
 
 import axios, { AxiosResponse } from "axios";
@@ -95,6 +95,7 @@ export async function POST(request: Request) {
       }
     );
   }
+  console.log("POST sender: ", sender);
 
   const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
   const programId = new PublicKey(
@@ -104,10 +105,18 @@ export async function POST(request: Request) {
   const provider = new AnchorProvider(connection, {
     publicKey: sender,
   } as any);
-
   const claimProgram = new Program(IDL, provider);
 
-  const instruction = await claimProgram.methods.initialize().instruction();
+  const [claimPk] = web3.PublicKey.findProgramAddressSync(
+    [Buffer.from("claim"), provider.wallet.publicKey.toBuffer()],
+    claimProgram.programId,
+  )
+  console.log("Claim PDA:", claimPk.toBase58());
+
+  const instruction = await claimProgram.methods
+    .createClaim("uid1", "com2", "plan3", "email")
+    .accountsPartial({ claim: claimPk, signer: sender })
+    .instruction();
 
   // TODO : Replace with your transaction
   const transaction = new Transaction().add(instruction);

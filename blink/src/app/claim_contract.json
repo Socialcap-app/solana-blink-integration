@@ -1,26 +1,143 @@
 {
-    "address": "DsizHqMmG29T3W74m8TxSSMnQA9XcBS3UPcngnRoYCgT",
-    "metadata": {
-      "name": "claim_contract",
-      "version": "0.1.0",
-      "spec": "0.1.0",
-      "description": "Created with Anchor"
-    },
-    "instructions": [
-      {
-        "name": "initialize",
-        "discriminator": [
-          175,
-          175,
-          109,
-          31,
-          13,
-          152,
-          155,
-          237
-        ],
-        "accounts": [],
-        "args": []
+  "address": "5CpWfrGqx3bLny4tBR4C6psyJHmngewAaRLa3gPDyuZt",
+  "metadata": {
+    "name": "claim_contract",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "create_claim",
+      "discriminator": [
+        71,
+        122,
+        43,
+        84,
+        240,
+        165,
+        215,
+        181
+      ],
+      "accounts": [
+        {
+          "name": "claim",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  108,
+                  97,
+                  105,
+                  109
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "uid",
+          "type": "string"
+        },
+        {
+          "name": "community_uid",
+          "type": "string"
+        },
+        {
+          "name": "plan_uid",
+          "type": "string"
+        },
+        {
+          "name": "email",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Claim",
+      "discriminator": [
+        155,
+        70,
+        22,
+        176,
+        123,
+        215,
+        246,
+        102
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "AlreadyCreated",
+      "msg": "Claim already created"
+    }
+  ],
+  "types": [
+    {
+      "name": "Claim",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "uid",
+            "type": "string"
+          },
+          {
+            "name": "community_uid",
+            "type": "string"
+          },
+          {
+            "name": "plan_uid",
+            "type": "string"
+          },
+          {
+            "name": "state",
+            "type": "string"
+          },
+          {
+            "name": "applicant_pk",
+            "type": "pubkey"
+          },
+          {
+            "name": "applicant_email",
+            "type": "string"
+          },
+          {
+            "name": "result",
+            "type": "string"
+          },
+          {
+            "name": "created_utc",
+            "type": "i64"
+          },
+          {
+            "name": "closed_utc",
+            "type": "i64"
+          }
+        ]
       }
-    ]
-  }
+    }
+  ]
+}
