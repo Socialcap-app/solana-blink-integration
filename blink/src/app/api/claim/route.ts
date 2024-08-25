@@ -55,7 +55,7 @@ export async function GET(request: Request) {
     links: {
       actions: [
         {
-          href: `/api/claim/${hrefParams.join("&")}`,  /// replace with Socialcap call  . Parameters are in the href , sid property from field
+          href: `/api/claim?${hrefParams.join("&")}`,  /// replace with Socialcap call  . Parameters are in the href , sid property from field
           label: 'Claim',
           parameters: parameters,
         },
